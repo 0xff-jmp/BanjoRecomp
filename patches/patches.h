@@ -10,18 +10,19 @@
     __attribute__((noinline, weak, used, section(".recomp_event"))) void func {} \
     _Pragma("GCC diagnostic pop")
 
-#include "n64_types.h"
-
 #define osInvalDCache osInvalDCache_recomp
 #define osInvalICache osInvalICache_recomp
 #define osWritebackDCache osWritebackDCache_recomp
 #define osWriteBackDCacheAll osWritebackDCacheAll_recomp
-#define bzero bzero_recomp
-void osInvalDCache(void *, s32);
-void osInvalICache(void *, s32);
-void osWritebackDCache(void *, s32);
+#define osSendMesg osSendMesg_recomp
+#define osRecvMesg osRecvMesg_recomp
+#define osGetCount osGetCount_recomp
+#define osCreateMesgQueue osCreateMesgQueue_recomp
 void osWriteBackDCacheAll(void);
-void bzero(void *, int);
+#define bzero bzero_recomp
+#define osDpSetStatus osDpSetStatus_recomp
+
+#include "ultra64.h"
 
 typedef int bool;
 

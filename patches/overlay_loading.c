@@ -2,9 +2,6 @@
 #include "overlay_loading.h"
 #include "misc_funcs.h"
 
-// Forced .data to make patches.bin not be empty.
-__attribute__((used)) int x = 4;
-
 struct Overlay {
     void *start;
     void *end;
@@ -174,10 +171,6 @@ RECOMP_PATCH void ucode_load(void) {
     if (D_80283388 == 0) {
         piMgr_read(&sUcodeData, 0xB0000B70, UCODE_SIZE);
     }
-}
-
-// @recomp Stub this out
-RECOMP_PATCH void func_80247380(void){
 }
 
 typedef struct Animation_s Animation;
