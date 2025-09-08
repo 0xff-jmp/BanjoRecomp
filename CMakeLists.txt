@@ -290,7 +290,7 @@ if (WIN32)
     )
 
     # target_sources(BanjoRecompiled PRIVATE ${CMAKE_SOURCE_DIR}/icons/app.rc)
-    target_link_libraries(BanjoRecompiled PRIVATE SDL2)
+    target_link_libraries(BanjoRecompiled PRIVATE SDL2 Winmm.lib)
 endif()
 
 if (APPLE)

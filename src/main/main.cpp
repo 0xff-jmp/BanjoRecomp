@@ -42,6 +42,7 @@
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <timeapi.h>
 #include "SDL_syswm.h"
 #endif
 
@@ -543,6 +544,26 @@ int main(int argc, char** argv) {
     }
 
 #ifdef _WIN32
+    // Set up high resolution timing period.
+    timeBeginPeriod(1);
+
+    // Process arguments.
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--show-console") == 0)
+        {
+            if (GetConsoleWindow() == nullptr)
+            {
+                AllocConsole();
+                freopen("CONIN$", "r", stdin);
+                freopen("CONOUT$", "w", stderr);
+                freopen("CONOUT$", "w", stdout);
+            }
+
+            break;
+        }
+    }
+
     // Set up console output to accept UTF-8 on windows
     SetConsoleOutputCP(CP_UTF8);
 
@@ -682,6 +703,11 @@ int main(int argc, char** argv) {
     if (preloaded) {
         release_preload(preload_context);
     }
+
+#ifdef _WIN32
+    // End high resolution timing period.
+    timeEndPeriod(1);
+#endif
 
     return EXIT_SUCCESS;
 }
