@@ -93,9 +93,8 @@ RECOMP_PATCH void func_8032D510(Cube *cube, Gfx **gfx, Mtx **mtx, Vtx **vtx){
                     // Skip interpolation on vertices to account for vertex lists changing between frames of the sprite.
                     // Also skip interpolation on scale to account for the scale inverting when sprites are mirrored.
                     // TODO track this matrix for skipping interpolation when camera interpolation is skipped.
-                    // TODO rotation temporarily disabled for now, reenable it when RT64 decomposition is improved.
                     gEXMatrixGroupDecomposed((*gfx)++, base_transform_id, G_EX_PUSH, G_MTX_MODELVIEW,
-                        G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_SKIP, G_EX_COMPONENT_SKIP, G_EX_COMPONENT_INTERPOLATE,
+                        G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_SKIP, G_EX_COMPONENT_INTERPOLATE,
                         G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_SKIP, G_EX_COMPONENT_INTERPOLATE,
                         G_EX_ORDER_LINEAR, G_EX_EDIT_ALLOW);
 
