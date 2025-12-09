@@ -224,3 +224,72 @@ RECOMP_PATCH void __particleEmitter_initParticle(ParticleEmitter *this, Particle
     // @recomp Increment the particle emitter's spawn count.
     PARTICLE_EMITTER_SPAWN_COUNT(this)++;
 }
+
+extern void mlMtxRotatePYR(f32, f32, f32);
+
+typedef struct {
+    BKSprite *sprite_0;
+    f32 position[3];
+    f32 rotation[3];
+    f32 unk1C;
+    s16 unk20[2];
+    u8 color[3];
+    u8  unk27;
+    u32 frame_28_31:8;
+    u32 unk28_23:2;
+    u32 unk28_21:8;
+    u32 unk28_13:1;
+    u32 unk28_12:1;
+    u32 pad28_11:12;
+} Struct_B8860_0s;
+
+void projectile_setRoll(u8 indx, f32 angle);
+f32 projectile_getRoll(u8 indx);
+void projectile_freeByIndex(u8 arg0);
+void func_803382FC(s32);
+void func_80338308(s32 arg0, s32 arg1);
+void func_8033837C(s32 arg0);
+void spriteRender_draw(Gfx **gfx, Vtx **vtx, BKSprite *sp, u32 frame);
+
+extern Struct_B8860_0s D_80385000[0x32];
+
+// @recomp Patched to tag projectiles.
+RECOMP_PATCH void func_8033F7F0(u8 indx, Gfx **gfx, Mtx **mtx, Vtx **vtx){
+    Struct_B8860_0s *sp54;
+    f32 sp48[3];
+    f32 sp3C[3];
+    f32 sp30[3];
+
+    sp54 = &D_80385000[indx];
+    if(sp54->unk28_23 != 1){
+        ml_vec3f_copy(sp48,  sp54->position);
+        sp48[1] += (sp54->unk1C*sp54->unk20[1])/100.0;
+        viewport_getPosition_vec3f(sp3C);
+        ml_vec3f_diff_copy(sp30, sp48, sp3C);
+        if(sp54->unk28_12){
+            mlMtxSet(viewport_getMatrix());
+        }
+        else{
+            mlMtxIdent();
+        }
+        mlMtxRotatePYR(sp54->rotation[0], sp54->rotation[1], sp54->rotation[2]);
+        func_80252330(sp30[0], sp30[1], sp30[2]);
+        mlMtxApply(*mtx);
+        gSPMatrix((*gfx)++, OS_PHYSICAL_TO_K0((*mtx)++), G_MTX_PUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+        func_803382E4(sp54->unk28_21);
+        func_80338338(sp54->color[0], sp54->color[1],sp54->color[2]);
+        func_803382FC(sp54->unk27);
+        func_80338308(sp54->unk20[0], sp54->unk20[1]);
+        func_8033837C(1);
+        func_80338370();
+
+        // @recomp Set a matrix group before drawing the sprite.
+        gEXMatrixGroupSimpleNormal((*gfx)++, PROJECTILE_TRANSFORM_ID_START + indx, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
+
+        spriteRender_draw(gfx, vtx, sp54->sprite_0, sp54->frame_28_31);
+        gSPPopMatrix((*gfx)++, G_MTX_MODELVIEW);
+
+        // @recomp Clear the matrix group.
+        gEXPopMatrixGroup((*gfx)++, G_MTX_MODELVIEW);
+    }
+}
