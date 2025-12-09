@@ -270,7 +270,38 @@ RECOMP_PATCH Actor *func_802DC320(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx
     return this;
 }
 
-// @recomp Patched to set the zoombox portrait's ortho projection transform ID.
+// @recomp Patched to set the zoombox's model transform ID.
+RECOMP_PATCH void func_803163A8(GcZoombox *this, Gfx **gfx, Mtx **mtx) {
+    f32 sp5C[3];
+    f32 sp50[3];
+    f32 sp44[3];
+    f32 sp38[3];
+    f32 sp34;
+
+    sp34 = viewport_transformCoordinate(this->unk170, this->unk172, sp50, sp5C);
+    if (this->unk1A4_24) {
+        sp5C[1] += 180.0f;
+        sp5C[0] -= 2*sp5C[0];
+    }
+    sp38[0] = 0.0f; sp38[1] = 0.0f; sp38[2] = 0.0f;
+    sp44[0] = 0.0f; sp44[1] = 0.0f; sp44[2] = 0.0f;
+    func_8033A308(sp44);
+    modelRender_setDepthMode(MODEL_RENDER_DEPTH_NONE);
+    if (this->anim_ctrl != NULL) {
+        anctrl_drawSetup(this->anim_ctrl, sp50, 1);
+    }
+
+    // @recomp Set the model transform ID.
+    u32 prev_transform_id = cur_drawn_model_transform_id;
+    cur_drawn_model_transform_id = ZOOMBOX_TRANSFORM_ID_START + this->portrait_id;
+
+    modelRender_draw(gfx, mtx, sp50, sp5C, this->unk198 * sp34, sp38, this->model);
+
+    // @recomp Reset the model transform ID.
+    cur_drawn_model_transform_id = prev_transform_id;
+}
+
+// @recomp Patched to set the zoombox portrait's model and ortho projection transform IDs.
 RECOMP_PATCH void func_803164B0(GcZoombox *this, Gfx **gfx, Mtx **mtx, s32 arg3, s32 arg4, BKSpriteDisplayData *arg5, f32 arg6) {
     f32 sp2C[3];
     f32 temp_f12;
@@ -305,8 +336,15 @@ RECOMP_PATCH void func_803164B0(GcZoombox *this, Gfx **gfx, Mtx **mtx, s32 arg3,
     mlMtxScale_xyz(temp_f12, temp_f12, 1.0f);
     mlMtxApply(*mtx);
     gSPMatrix((*gfx)++, (*mtx)++, G_MTX_LOAD | G_MTX_MODELVIEW);
+
+    // @recomp Create a matrix group for the portrait's model matrix.
+    gEXMatrixGroupDecomposedVerts((*gfx)++, ZOOMBOX_PORTRAIT_TRANSFORM_ID_START + this->portrait_id, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
+
     modelRender_setDepthMode(MODEL_RENDER_DEPTH_NONE);
     func_80344090(arg5, this->unk186, gfx);
     func_8033687C(gfx);
     viewport_setRenderViewportAndPerspectiveMatrix(gfx, mtx);
+
+    // @recomp Pop the model matrix group.
+    gEXPopMatrixGroup((*gfx)++, G_MTX_MODELVIEW);
 }

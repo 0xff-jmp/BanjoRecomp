@@ -18,12 +18,13 @@ RECOMP_PATCH void player_draw(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
         eggShatter_draw(gfx, mtx, vtx);
 
         // @recomp Set the current transform ID to banjo's.
+        u32 prev_transform_id = cur_drawn_model_transform_id;
         cur_drawn_model_transform_id = BANJO_TRANSFORM_ID_START;
 
         baModel_draw(gfx, mtx, vtx);
 
-        // @recomp Clear the current transform ID.
-        cur_drawn_model_transform_id = 0;
+        // @recomp Reset the current transform ID.
+        cur_drawn_model_transform_id = prev_transform_id;
     }
 }
 
@@ -34,13 +35,16 @@ RECOMP_PATCH void __marker_draw(ActorMarker *this, Gfx **gfx, Mtx **mtx, Vtx **v
     f32 draw_dist_f;
     f32 percentage;
 
-    // @recomp Set the current drawn marker's transform ID.
+    // @recomp Calculate the current drawn marker's transform ID.
     s32 cur_drawn_marker_spawn_index = bkrecomp_get_marker_spawn_index(this);
-    cur_drawn_model_transform_id = MARKER_TRANSFORM_ID_START + cur_drawn_marker_spawn_index * MARKER_TRANSFORM_ID_COUNT;
+    u32 prev_transform_id = cur_drawn_model_transform_id;
+    u32 transform_id = MARKER_TRANSFORM_ID_START + cur_drawn_marker_spawn_index * MARKER_TRANSFORM_ID_COUNT;
     if(!this->unk3E_0){
+        // @recomp Set the current drawn marker's transform ID.
+        cur_drawn_model_transform_id = transform_id;
         this->drawFunc(this, gfx, mtx, vtx);
         // @recomp Clear the current transform ID after drawing.
-        cur_drawn_model_transform_id = 0;
+        cur_drawn_model_transform_id = prev_transform_id;
         return;
     }
     actor =  marker_getActor(this);
@@ -61,9 +65,11 @@ RECOMP_PATCH void __marker_draw(ActorMarker *this, Gfx **gfx, Mtx **mtx, Vtx **v
             percentage = 1.0f;
         }
         func_8033A280(percentage);
+        // @recomp Set the current drawn marker's transform ID.
+        cur_drawn_model_transform_id = transform_id;
         this->drawFunc(this, gfx, mtx, vtx);
         // @recomp Set the current drawn marker to null after drawing.
-        cur_drawn_model_transform_id = 0;
+        cur_drawn_model_transform_id = prev_transform_id;
     }//L8032D300
     func_8033A244(30000.0f);
     func_8033A280(1.0f);
