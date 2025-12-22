@@ -82,19 +82,18 @@ RECOMP_PATCH void viewport_setRenderPerspectiveMatrix(Gfx **gfx, Mtx **mtx, f32 
     // @recomp If a perspective projection transform ID is set, apply it as the projection matrix group. Otherwise, use auto as the projection matrix group.
     bool skip_interpolation = all_interpolation_skipped() || perspective_interpolation_skipped();
     if (cur_perspective_projection_transform_id != 0) {
+        // Force the projection to not adjust itself for a wider aspect ratio when it's being rendered for the Bottles' bonus puzzle or the Mumbo photo.
+        u16 aspect = G_EX_ASPECT_AUTO;
+        bool inPictureGameMode = (getGameMode() == GAME_MODE_8_BOTTLES_BONUS) || (getGameMode() == GAME_MODE_A_SNS_PICTURE);
+        bool isGameplayTransformId = (cur_perspective_projection_transform_id == PROJECTION_GAMEPLAY_TRANSFORM_ID);
+        bool isTransitionTransformId = (cur_perspective_projection_transform_id == PROJECTION_TRANSITION_TRANSFORM_ID);
+        if (inPictureGameMode && (isGameplayTransformId || isTransitionTransformId)) {
+            aspect = G_EX_ASPECT_STRETCH;
+        }
         if (skip_interpolation) {
-            gEXMatrixGroupSkipAll((*gfx)++, cur_perspective_projection_transform_id, G_EX_NOPUSH, G_MTX_PROJECTION, G_EX_EDIT_NONE);
+            gEXMatrixGroupSkipAllAspect((*gfx)++, cur_perspective_projection_transform_id, G_EX_NOPUSH, G_MTX_PROJECTION, G_EX_EDIT_NONE, aspect);
         }
         else {
-            // Force the projection to not adjust itself for a wider aspect ratio when it's being rendered for the Bottles' bonus puzzle or the Mumbo photo.
-            u16 aspect = G_EX_ASPECT_AUTO;
-            bool inPictureGameMode = (getGameMode() == GAME_MODE_8_BOTTLES_BONUS) || (getGameMode() == GAME_MODE_A_SNS_PICTURE);
-            bool isGameplayTransformId = (cur_perspective_projection_transform_id == PROJECTION_GAMEPLAY_TRANSFORM_ID);
-            bool isTransitionTransformId = (cur_perspective_projection_transform_id == PROJECTION_TRANSITION_TRANSFORM_ID);
-            if (inPictureGameMode && (isGameplayTransformId || isTransitionTransformId)) {
-                aspect = G_EX_ASPECT_STRETCH;
-            }
-
             gEXMatrixGroup((*gfx)++, cur_perspective_projection_transform_id, G_EX_INTERPOLATE_SIMPLE, G_EX_NOPUSH, G_MTX_PROJECTION, G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_INTERPOLATE, G_EX_COMPONENT_SKIP, G_EX_COMPONENT_INTERPOLATE, G_EX_ORDER_LINEAR, G_EX_EDIT_NONE, aspect, G_EX_COMPONENT_SKIP, G_EX_COMPONENT_AUTO);
         }
     }
