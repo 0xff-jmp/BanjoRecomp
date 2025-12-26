@@ -65,7 +65,8 @@ RECOMP_PATCH void sky_draw(Gfx **gfx, Mtx **mtx, Vtx **vtx){
     if(gcSky.model_bins[0]){
         drawRectangle2D(gfx, 0, 0, (s32)(f32) gFramebufferWidth, (s32)(f32)gFramebufferHeight,0, 0, 0); //fill screen with black
         // @recomp Set the skybox projection matrix group.
-        gEXMatrixGroupSimpleNormal((*gfx)++, PROJECTION_SKYBOX_TRANSFORM_ID, G_EX_PUSH, G_MTX_PROJECTION, G_EX_EDIT_NONE);
+        s32 prev_perspective_projection_transform = cur_perspective_projection_transform_id;
+        cur_perspective_projection_transform_id = PROJECTION_SKYBOX_TRANSFORM_ID;
 
         viewport_setRenderViewportAndPerspectiveMatrix(gfx, mtx);
         viewport_getPosition_vec3f(position);
@@ -86,8 +87,8 @@ RECOMP_PATCH void sky_draw(Gfx **gfx, Mtx **mtx, Vtx **vtx){
             }
         }
 
-        // @recomp Pop the skybox projection matrix group.
-        gEXPopMatrixGroup((*gfx)++, G_MTX_PROJECTION);
+        // @recomp Restore the previous perpsective projection transform ID.
+        cur_perspective_projection_transform_id = prev_perspective_projection_transform;
     }
     else{//L8030B200
         drawRectangle2D(gfx, 0, 0, (s32)(f32) gFramebufferWidth, (s32)(f32)gFramebufferHeight, 0, 0, 0);
