@@ -262,7 +262,7 @@
                                 data-checked="note_saving_mode"
                                 value="On"
                                 id="note_saving_enabled"
-                                style="nav-up: #camera_inversion_none"
+                                style="nav-up: #analog_camera_inversion_none"
                             />
                             <label class="config-option__tab-label" for="note_saving_enabled">On</label>
 
@@ -274,7 +274,7 @@
                                 data-checked="note_saving_mode"
                                 value="Off"
                                 id="note_saving_disabled"
-                                style="nav-up: #camera_inversion_x"
+                                style="nav-up: #analog_camera_inversion_x"
                             />
                             <label class="config-option__tab-label" for="note_saving_disabled">Off</label>
                         </div>
