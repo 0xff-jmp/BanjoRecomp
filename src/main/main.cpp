@@ -545,14 +545,16 @@ void on_launcher_init(recompui::LauncherMenu *menu) {
     );
     game_options_menu->add_default_options();
 
+    constexpr float banjo_apsect_ratio = 1.0434f;
+    constexpr float banjo_height = 500.0f;
+
     // TODO: Style launcher and get better background.
-    auto bg_element = menu->set_launcher_background_svg("banjkazoobg.svg");
-    bg_element->set_top(0.0f);
-    bg_element->set_bottom(0.0f);
+    auto bg_element = menu->set_launcher_background_svg("Banjo.svg");
+    bg_element->set_top(50.0f, recompui::Unit::Percent);
     bg_element->set_left(50.0f, recompui::Unit::Percent);
-    bg_element->set_height(1080.0f, recompui::Unit::Dp);
-    bg_element->set_width(1920.0f, recompui::Unit::Dp);
-    bg_element->set_translate_2D(-50.0f, 0.0f, recompui::Unit::Percent);
+    bg_element->set_height(banjo_height, recompui::Unit::Dp);
+    bg_element->set_width(banjo_height * banjo_apsect_ratio, recompui::Unit::Dp);
+    bg_element->set_translate_2D(-50.0f, -50.0f, recompui::Unit::Percent);
     bg_element->set_opacity(0.25f);
 }
 
