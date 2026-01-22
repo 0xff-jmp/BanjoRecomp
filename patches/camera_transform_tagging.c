@@ -21,6 +21,7 @@ bool perspective_interpolation_skipped() {
 }
 
 s32 getGameMode(void);
+enum map_e map_get(void);
 
 extern f32 sViewportFOVy;
 extern f32 sViewportAspect;
@@ -250,7 +251,7 @@ RECOMP_PATCH void ncCamera_update(void) {
         ml_vec3f_add(vpPosProjected, vpPosPrev, vpPosVel);
 
         f32 distToProjected = ml_vec3f_distance(vpPos, vpPosProjected);
-        const f32 SkipThreshold = 100.0f;
+        const f32 SkipThreshold = (map_get() == MAP_94_CS_INTRO_SPIRAL_7) ? 50.0f : 100.0f;
         if (distToProjected > SkipThreshold) {
             ml_vec3f_clear(vpPosVel);
             skip_perspective_interpolation = TRUE;
