@@ -159,7 +159,6 @@ set (SOURCES
 target_include_directories(BanjoRecompiled PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/lib/N64ModernRuntime/N64Recomp/include
-    ${CMAKE_SOURCE_DIR}/lib/concurrentqueue
     ${CMAKE_SOURCE_DIR}/lib/rt64/src/contrib
     ${CMAKE_SOURCE_DIR}/lib/rt64/src/contrib/hlslpp/include
     ${CMAKE_SOURCE_DIR}/lib/rt64/src/contrib/dxc/inc
@@ -169,7 +168,6 @@ target_include_directories(BanjoRecompiled PRIVATE
     ${CMAKE_SOURCE_DIR}/lib/RecompFrontend/recompinput/include
     ${CMAKE_SOURCE_DIR}/lib/RecompFrontend/recompui/include
     ${CMAKE_SOURCE_DIR}/lib/RecompFrontend/recompui/src
-    ${CMAKE_SOURCE_DIR}/lib/freetype-windows-binaries/include
     ${CMAKE_SOURCE_DIR}/lib/rt64/src/contrib/nativefiledialog-extended/src/include
     ${CMAKE_SOURCE_DIR}/lib/SlotMap
     ${CMAKE_CURRENT_BINARY_DIR}
