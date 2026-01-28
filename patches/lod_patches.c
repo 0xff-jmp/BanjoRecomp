@@ -14,6 +14,7 @@ typedef struct {
 extern f32 D_80383C98[3];
 extern void func_80339124(Gfx **gfx, Mtx **mtx, BKGeoList *geo_list);
 extern float gu_sqrtf(float val);
+extern enum transformation_e bsStoredState_getTransformation(void);
 
 // @recomp Patched to force all LODs to act as if they were a fixed distance from the camera.
 RECOMP_PATCH void func_80338B50(Gfx **gfx, Mtx **mtx, void *arg2) {
